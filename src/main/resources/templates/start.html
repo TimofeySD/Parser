@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Учёные и события</title>
+</head>
+<body>
+
+<h1>Учёные и события</h1>
+
+<p>
+    Программа собирает данные о российских учёных из статьи
+    <a href="https://history.ru/read/articles/uchenye-rossii">
+        «Учёные России»
+    </a>
+    и исторические события из
+    <a href="https://history.ru/timeline">
+        ленты времени портала «История.РФ»
+    </a>.
+</p>
+
+<p>
+    Затем программа сопоставляет события с годами жизни учёных.
+    На следующей странице события можно отсортировать по году
+    или по названию.
+</p>
+
+<form action="/import" method="post"
+      th:unless="${scientistsImported == true and eventsImported == true}">
+    <button type="submit">Начать парсинг</button>
+</form>
+
+<div th:if="${importStarted}">
+    <p th:if="${scientistsImported}">
+        Парсинг учёных выполнен успешно.
+    </p>
+
+    <p th:if="${scientistsError}" th:text="${scientistsError}"></p>
+
+    <p th:if="${eventsImported}">
+        Парсинг событий выполнен успешно.
+    </p>
+
+    <p th:if="${eventsError}" th:text="${eventsError}"></p>
+
+    <form action="/results" method="get"
+          th:if="${scientistsImported == true and eventsImported == true}">
+        <button type="submit">Далее — к результатам</button>
+    </form>
+</div>
+
+</body>
+</html>

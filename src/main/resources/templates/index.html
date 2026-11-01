@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Учёные и события</title>
+</head>
+<body>
+
+<h1>Учёные и события</h1>
+
+<form action="/results" method="get">
+  <label for="scientistId">Выберите учёного:</label>
+
+  <select id="scientistId" name="scientistId" required>
+    <option value="">Выберите учёного</option>
+
+    <option th:each="scientist : ${scientists}"
+            th:value="${scientist.id}"
+            th:text="${scientist.name}"
+            th:selected="${selectedScientist != null
+                    and scientist.id == selectedScientist.id}">
+    </option>
+  </select>
+
+  <label for="sort">Сортировка:</label>
+
+  <select id="sort" name="sort">
+    <option value="year" th:selected="${sort == 'year'}">
+      По году
+    </option>
+    <option value="title" th:selected="${sort == 'title'}">
+      По названию
+    </option>
+  </select>
+  <button type="submit">Показать события</button>
+</form>
+
+<div th:if="${selectedScientist != null}">
+  <h2 th:text="${selectedScientist.name}">Учёный</h2>
+  <p th:text="${selectedScientist.biography}"></p>
+  <p>
+    <a th:href="${selectedScientist.sourceUrl}">
+      Биография на История.РФ
+    </a>
+  </p>
+
+  <p>
+    Годы жизни:
+    <span th:text="${selectedScientist.birthYear}"></span>–
+    <span th:text="${selectedScientist.deathYear}"></span>
+  </p>
+
+  <p>События выбраны по году. Совпадение не означает участия учёного в событии.</p>
+
+  <p th:if="${#lists.isEmpty(events)}">
+    Событий за этот период не найдено.
+  </p>
+
+  <table th:unless="${#lists.isEmpty(events)}" border="1">
+    <thead>
+    <tr>
+      <th>Год</th>
+      <th>Событие</th>
+      <th>Источник</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${events}">
+      <td th:text="${event.year}"></td>
+      <td>
+        <strong th:text="${event.title}"></strong>
+        <p th:text="${event.description}"></p>
+      </td>
+      <td><a th:href="${event.url}">Открыть на История.РФ</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
